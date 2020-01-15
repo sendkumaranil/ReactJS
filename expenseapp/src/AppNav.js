@@ -5,7 +5,7 @@ class AppNav extends React.Component{
     render(){
         return(
             <div>
-                <Navbar color='dark' faded expand='md'>
+                <Navbar color='dark' dark expand='md'>
                     <NavbarBrand href="/">
                         Expense Tracker Application
                     </NavbarBrand>

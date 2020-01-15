@@ -9,9 +9,9 @@ import Moment from 'react-moment'
 
 class Expense extends React.Component{
     emptyItem = {
-        description : '' ,
+        description : '',
         expensedate : new Date(),
-        id:104,
+        id:110,
         location : '',
         category : {id:1 , name:'Travel'}
     }
@@ -33,8 +33,7 @@ class Expense extends React.Component{
 
     async handleFormSubmit(event){
         const item=this.state.item;
-        console.log(item);
-        await fetch('http://api/expenses/',{
+        await fetch('http://localhost:8585/api/expenses/',{
             method:'POST',
             headers:{
                 'Accept':'application/json',
@@ -65,7 +64,8 @@ class Expense extends React.Component{
     }
 
     async remove(id){
-        await fetch('http://localhost:8585/api/expenses/${id}',{
+        console.log('id='+'$(id)')
+        await fetch('http://localhost:8585/api/expenses/'+id,{
             method:'DELETE',
             headers:{
                 'Accept':'application/json',
@@ -136,7 +136,9 @@ class Expense extends React.Component{
                         </FormGroup>
                         <FormGroup>
                             <Label for="category">Category</Label>
-                            <select onChange={this.handleChange}>{optionList}</select>
+                            <select onChange={this.handleChange}>
+                                {optionList}
+                            </select>
                         </FormGroup>
                         <FormGroup>
                             <Label for="date">Date</Label>

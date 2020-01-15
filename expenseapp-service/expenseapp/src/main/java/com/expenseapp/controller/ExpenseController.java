@@ -23,6 +23,7 @@ public class ExpenseController {
 
     @GetMapping("/")
     public List<Expense> getExpenses(){
+
         return expenseRepository.findAll();
     }
 
