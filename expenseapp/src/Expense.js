@@ -3,7 +3,7 @@ import AppNav from './AppNav'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import './App.css'
-import {Table,Container,Input,Button,Label,FormGroup,Form} from 'reactstrap'
+import {Table,Container,Input,Button,Label,FormGroup,Form,Modal,ModalHeader,ModalBody,ModalFooter} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import Moment from 'react-moment'
 
@@ -23,13 +23,21 @@ class Expense extends React.Component{
             Categories:[],
             Expenses:[],
             date:new Date(),
-            item:this.emptyItem
+            item:this.emptyItem,
+            modal:false
         }
-
+        this.toggle=this.toggle.bind(this);
         this.handleFormSubmit=this.handleFormSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
         this.handleDateChange=this.handleDateChange.bind(this);
     }
+
+    toggle() {
+        this.setState({
+          modal: !this.state.modal
+        });
+        console.log('toggle:'+this.state.modal)
+      }
 
     async handleFormSubmit(event){
         const item=this.state.item;
@@ -128,40 +136,11 @@ class Expense extends React.Component{
             <div>
                 <AppNav/>
                 <Container>
-                    {title}
-                    <Form onSubmit={this.handleFormSubmit}>
-                        <FormGroup>
-                            <Label for="description">Title</Label>
-                            <Input type="description" name="description" id="description" onChange={this.handleChange} autoComplete="name" />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="category">Category</Label>
-                            <select onChange={this.handleChange}>
-                                {optionList}
-                            </select>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="date">Date</Label>
-                            <DatePicker selected={this.state.item.expensedate} onChange={this.handleDateChange} />
-                        </FormGroup>
-                        <div className="row">
-                            <FormGroup className="col-md-4 mb-3">
-                                <Label for="location">Location</Label>
-                                <Input type="text" name="location" id="location" onChange={this.handleChange} />
-                            </FormGroup>
-                        </div>
-                        <FormGroup>
-                            <Button color="primary" type="submit">Save</Button>{'|'}
-                            <Button color="secondary" tag={Link} to="/">Cancel</Button>
-                        </FormGroup>
-                    </Form>
-                </Container>
-                <hr/>
-                <Container>
-                    <h3>Expense List</h3>
-                    <Table className="mt-4">
+                <div className="shadow-lg p-3 mb-5 bg-white rounded">
+                    <h4 className="text-danger">Expense List</h4>
+                    <Table className="table table-hover table-dark">
                         <thead>
-                            <tr>
+                            <tr className="bg-warning">
                                 <th width="30%">Description</th>
                                 <th width="10%">Location</th>
                                 <th>Category</th>
@@ -173,7 +152,78 @@ class Expense extends React.Component{
                             {rows}
                         </tbody>
                     </Table>
+                    </div>
                 </Container>
+                <Container>
+                <div className="shadow-lg p-3 mb-5 bg-white rounded">
+                    <Button color="danger" onClick={this.toggle}>Add Expense</Button>
+                </div>
+                </Container>
+                <Modal isOpen={this.state.modal} size="lg">
+                <Form onSubmit={this.handleFormSubmit}>
+                    <ModalHeader style={{color:'red'}}>Add Expense</ModalHeader>
+                    <ModalBody>
+                        <Table className="table table-hover table-dark">
+                        <tr>
+                        <td>
+                        <FormGroup>
+                            <Label for="description">Title</Label>
+                        </FormGroup>
+                        </td>
+                        <td>
+                        <FormGroup>
+                            <Input type="text" name="description" id="description" onChange={this.handleChange} autoComplete="name" />
+                        </FormGroup>
+                        </td>
+                        </tr>
+                    <tr>
+                        <td>
+                        <FormGroup>
+                            <Label for="category">Category</Label>
+                        </FormGroup>
+                        </td> 
+                        <td>
+                        <FormGroup>
+                        <select onChange={this.handleChange}>
+                            {optionList}
+                        </select>
+                        </FormGroup>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <FormGroup>
+                            <Label for="date">Date</Label>
+                        </FormGroup>
+                        </td>
+                        <td>
+                        <FormGroup>
+                            <DatePicker calendarClassName="rasta-stripes" selected={this.state.item.expensedate} onChange={this.handleDateChange} />
+                        </FormGroup>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        <FormGroup>
+                            <Label for="location">Location</Label>
+                        </FormGroup>
+                        </td>
+                        <td>
+                        <FormGroup>
+                            <Input type="text" name="location" id="location" onChange={this.handleChange} />
+                        </FormGroup>
+                        </td>
+                    </tr>
+                    </Table>
+                    </ModalBody>
+                    <ModalFooter>
+                    <FormGroup>
+                        <Button color="primary" type="submit">Save</Button>{' '}
+                        <Button color="danger" onClick={this.toggle}>Cancel</Button>
+                    </FormGroup>
+                    </ModalFooter>
+                    </Form>
+                </Modal>
             </div>
         )
     }
