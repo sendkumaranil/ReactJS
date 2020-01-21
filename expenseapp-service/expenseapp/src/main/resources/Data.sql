@@ -1,6 +1,6 @@
-insert into user values (1,'Anil Kumar', 'anil.kumar@gmail.com')
-insert into user values (2,'Mathew', 'mathew@abc.com')
-insert into user values (3,'Adam', 'adam@adam.com')
+insert into user values (1,'anil.kumar@gmail.com','Anil Kumar')
+insert into user values (2, 'mathew@abc.com','Mathew')
+insert into user values (3, 'adam@adam.com','Adam')
 
 
 insert into category values (1,'Travel')

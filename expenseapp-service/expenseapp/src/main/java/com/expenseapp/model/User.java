@@ -16,9 +16,13 @@ import javax.persistence.Table;
 public class User {
 
     @Id
-    private String username;
+    private long id;
 
     private String name;
 
     private String email;
+
+    public long getId() {
+        return this.id;
+    }
 }

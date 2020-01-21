@@ -1,0 +1,1 @@
+export const EXPENSE_SERVICE_BASE_ENDPOINT='http://localhost:8585';
