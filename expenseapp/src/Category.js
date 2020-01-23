@@ -1,6 +1,6 @@
 import React from 'react'
 import AppNav from './AppNav'
-import {Button,Input,Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
+import {Button,Input,Modal, ModalHeader, ModalBody, ModalFooter,Spinner} from 'reactstrap'
 
 class Category extends React.Component{
     state={
@@ -81,7 +81,11 @@ class Category extends React.Component{
     render(){
         const{Categories,isLoading}=this.state;
         if(isLoading){
-            return (<div>Loading...</div>);
+            return (<div><AppNav/><h2>Loading 
+            <Spinner type="grow" color="primary" />
+            <Spinner type="grow" color="warning" />
+            <Spinner type="grow" color="danger" /></h2>
+            </div>);
         }
 
         return(

@@ -3,10 +3,11 @@ import AppNav from './AppNav'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import './App.css'
-import {Table,Container,Input,Button,Label,FormGroup,Form,Modal,ModalHeader,ModalBody,ModalFooter,Badge} from 'reactstrap'
+import {Spinner,Table,Container,Input,Button,Label,FormGroup,Form,Modal,ModalHeader,ModalBody,ModalFooter,Badge} from 'reactstrap'
 import Moment from 'react-moment'
 import {Link} from 'react-router-dom'
 import {EXPENSE_SERVICE_BASE_ENDPOINT} from './constant'
+import PaginationComp from './PaginationComp'
 
 class Expense extends React.Component{
     emptyItem = {
@@ -116,6 +117,13 @@ class Expense extends React.Component{
     }
 
     async loadExpenses(){
+        
+        this.setState(
+            {
+                isLoading:true
+            }
+        )
+
         const expenseResponse=await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/expenses/');
         const expData=await expenseResponse.json();
         const expMaxId=expData.reduce((max,p) => p.id > max ? p.id : max,expData[0].id);
@@ -155,8 +163,13 @@ class Expense extends React.Component{
         const {Categories}=this.state;
         const {Expenses,isLoading}=this.state;
 
-        if(isLoading)
-            return(<div>Loading ...</div>);
+        if(isLoading){
+            return (<div><AppNav/><h2>Loading 
+            <Spinner type="grow" color="primary" />
+            <Spinner type="grow" color="danger" />
+            <Spinner type="grow" color="success" /></h2>
+            </div>);
+        }
 
         let optionList=Categories.map( category =>
              <option value={category.id} key={category.name}>{category.name}</option>
@@ -201,7 +214,7 @@ class Expense extends React.Component{
                     <Link to={'/categories'} style={{color:'white'}}>Manage Categories</Link>
                     </Button>
                     <h5 style={{float:'right'}}>
-                        <Badge color="danger">{this.state.username}</Badge>
+                        <PaginationComp/>
                     </h5>
                     
                 </div>
