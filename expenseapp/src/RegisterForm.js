@@ -12,7 +12,7 @@ const RegisterForm = props => {
                 <div className="user_card_register">
                     <div className="d-flex justify-content-center">
                         <div className="brand_logo_container">
-                            <img src={process.env.PUBLIC_URL + "/expense.png"} class="brand_logo" alt="Logo"/>
+                            <img src={process.env.PUBLIC_URL + "/expense.png"} className="brand_logo" alt="Logo"/>
                         </div>
                     </div>
                     <div className="d-flex justify-content-center form_container">

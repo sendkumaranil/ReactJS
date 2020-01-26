@@ -1,10 +1,47 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './LoginForm.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faKey, faUser,faPenFancy,faEraser } from '@fortawesome/free-solid-svg-icons'
 import {Link} from 'react-router-dom'
+import {Alert} from 'reactstrap'
 
 const LoginForm = props =>{
+	const [username,setUsername] = useState('');
+	const [passwd,setPasswd] = useState('');
+	const [visible,setVisible] = useState(false);
+
+	function handleUsernameChange(event){
+		event.preventDefault();
+		let username=event.target.value;
+		setUsername(username);
+	}
+
+	function handlePasswordChange(event){
+		event.preventDefault();
+		let password=event.target.value;
+		setPasswd(password);
+	}
+
+	function handleLogIn(event){
+		event.preventDefault();
+		if(username === "" || passwd === ""){
+			setVisible(true);
+			window.setTimeout(()=>{
+				setVisible(false);
+			},2000);
+		}else{
+			console.log("username password entered");
+			validateUserNamePassword(username,passwd);
+		}
+	}
+
+	function validateUserNamePassword(username,password){
+		
+	}
+
+	const onDismiss = () =>{
+		setVisible(false);
+	}
 
     return (
         <div style={{display: 'flex',  justifyContent:'center', alignItems:'center',marginTop:'50px'}}>
@@ -13,7 +50,7 @@ const LoginForm = props =>{
                 <div className="user_card">
                     <div className="d-flex justify-content-center">
                         <div className="brand_logo_container">
-                            <img src={process.env.PUBLIC_URL + "/expense.png"} class="brand_logo" alt="Logo"/>
+                            <img src={process.env.PUBLIC_URL + "/expense.png"} className="brand_logo" alt="Logo"/>
                         </div>
                     </div>
                     <div className="d-flex justify-content-center form_container">
@@ -22,22 +59,22 @@ const LoginForm = props =>{
 							<div className="input-group-append">
 								<span className="input-group-text"><i><FontAwesomeIcon icon={faUser} /></i></span>
 							</div>
-							<input type="text" name="" className="form-control input_user" value="" placeholder="username"/>
+							<input type="text" name="username" onChange={handleUsernameChange} className="form-control input_user" placeholder="username"/>
 						</div>
 						<div className="input-group mb-2">
 							<div className="input-group-append">
 								<span className="input-group-text"><i><FontAwesomeIcon icon={faKey} /></i></span>
 							</div>
-							<input type="password" name="" className="form-control input_pass" value="" placeholder="password"/>
+							<input type="password" name="passwd" onChange={handlePasswordChange} className="form-control input_pass" placeholder="password"/>
 						</div>
 						<div className="form-group">
 							<div className="custom-control custom-checkbox">
 								<input type="checkbox" className="custom-control-input" id="customControlInline" />
-								<label className="custom-control-label" for="customControlInline">Remember me</label>
+								<label className="custom-control-label" htmlFor="customControlInline">Remember me</label>
 							</div>
 						</div>
 							<div className="d-flex justify-content-center mt-3 login_container">
-				 	<button type="button" name="button" className="btn login_btn">Login</button>
+				 	<button type="button" name="btnLogin" onClick={handleLogIn} className="btn login_btn">Login</button>
 				   </div>
 					</form>
                     </div>
@@ -56,6 +93,9 @@ const LoginForm = props =>{
 				</div>
                 </div>
             </div>
+			<Alert color="danger" isOpen={visible} toggle={onDismiss} fade={false}>
+				Please enter the username and password!
+			</Alert>
         </div>
         </div>
     );

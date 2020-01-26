@@ -11,6 +11,9 @@ class Home extends React.Component{
                 <h2 id='demotext' style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '100vh'}}>
                      Expense Tracker Application
                </h2>
+               <footer>
+                   Copy right 2020 Anil Kumar Expense Tracker Application
+               </footer>
             </div>
         )
     }

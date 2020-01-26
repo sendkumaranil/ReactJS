@@ -7,6 +7,7 @@ import LoginPage from './LoginPage'
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
 import ForgotPassword from './ForgotPassword';
+import NotFound from './NotFound';
 
 class App extends React.Component {
   state={ }
@@ -21,6 +22,7 @@ class App extends React.Component {
             <Route path="/login" exact={true} component={LoginForm}/>
             <Route path="/registeruser" exact={true} component={RegisterForm}/>
             <Route path="/forgotpassword" exact={true} component={ForgotPassword}/>
+            <Route path='*' exact={true} component={NotFound} />
         </Switch>
       </Router>
     );

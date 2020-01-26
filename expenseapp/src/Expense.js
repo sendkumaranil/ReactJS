@@ -120,7 +120,7 @@ class Expense extends React.Component{
         
         this.setState(
             {
-                isLoading:true
+                isLoading:false
             }
         )
 

@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.Instant;
 
-@NoArgsConstructor
+
 @Data
 @Entity
 @Table(name = "expense")
 public class Expense {
 
     @Id
+    @GeneratedValue
     private long id;
 
     private Instant expensedate;
@@ -28,8 +29,66 @@ public class Expense {
     @ManyToOne
     private User user;
 
+    public Expense(){
+
+    }
+
+    public Expense(Instant expensedate, String description, String location, Category category, User user) {
+        this.expensedate = expensedate;
+        this.description = description;
+        this.location = location;
+        this.category = category;
+        this.user = user;
+    }
+
     public long getId() {
         return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Instant getExpensedate() {
+        return expensedate;
+    }
+
+    public void setExpensedate(Instant expensedate) {
+        this.expensedate = expensedate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public User getUser() {
+        user.setPassword(null);
+        return user;
+    }
+
+    public void setUser(User user) {
+        user.setPassword(null);
+        this.user = user;
     }
 
     @Override
