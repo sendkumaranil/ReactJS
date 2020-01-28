@@ -50,6 +50,24 @@
         padding: 10px;
         text-align: center;
     }
+    .brand_logo_container_card {
+        position: relative;
+        height: 170px;
+        width: 170px;
+        top: 5px;
+        margin:15px 110px 15px 110px;
+        border-radius: 50%;
+        background: #006622;
+        padding: 10px;
+        text-align: center;
+    }
+    .brand_logo_animated {
+        animation: App-logo-spin infinite 20s linear;
+        height: 150px;
+        width: 150px;
+        border-radius: 50%;
+        border: 2px solid white;
+    }
     .brand_logo {
         height: 150px;
         width: 150px;

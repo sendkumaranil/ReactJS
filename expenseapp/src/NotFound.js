@@ -1,13 +1,10 @@
 import React from 'react'
+import ExpenseCard from './ExpenseCard'
 
 const NotFound = () =>{
 
     return (
-        <div style={{display: 'flex',  justifyContent:'center', alignItems:'center',marginTop:'50px'}}>
-            <img src={process.env.PUBLIC_URL + "/expense.png"} className="brand_logo" alt="Logo"/>
-            
-            
-        </div>
+        <ExpenseCard title='Page Not Found' subtitle='404' text='Ops!! Looking page not found this site' textcolor='success'/>
     );
 }
 
