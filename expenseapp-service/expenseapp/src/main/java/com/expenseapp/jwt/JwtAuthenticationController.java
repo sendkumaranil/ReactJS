@@ -54,7 +54,7 @@ public class JwtAuthenticationController {
             return ResponseEntity.ok(new JwtTokenResponse(jwtToken));
         }else {
             InvalidCredentialResponse invalidCreds=new InvalidCredentialResponse(
-                    jwtTokenRequest.getUsername(),"Invalid Credentials");
+                    jwtTokenRequest.getUsername(),"INVALID_CREDENTIALS");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(invalidCreds);
         }
     }

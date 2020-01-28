@@ -1,8 +1,14 @@
 import React from 'react'
 import {Nav,Navbar,NavItem,NavbarBrand,NavLink} from 'reactstrap'
+import AuthenticationService from './service/AuthenticationService'
+import { withRouter } from 'react-router-dom';
 
 class AppNav extends React.Component{
+    
     render(){
+        
+        const isUserLoggedIn=AuthenticationService.isUserLoggedIn();
+        
         return(
             <div>
                 <Navbar color='dark' dark>
@@ -15,13 +21,13 @@ class AppNav extends React.Component{
                             <NavLink href="/home">Home</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/categories">Categories</NavLink>
+                            {(isUserLoggedIn) ? <NavLink href="/categories">Categories</NavLink> : ''} 
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/expense">Expense</NavLink>
+                            {(isUserLoggedIn) ? <NavLink href="/expense">Expense</NavLink> : ''}
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/">Log out</NavLink>
+                            {(isUserLoggedIn) ? <NavLink href="/logout">Log out</NavLink> : <NavLink href="/login">Log In</NavLink>}
                         </NavItem>
                     </Nav>
                 </Navbar>
@@ -30,4 +36,4 @@ class AppNav extends React.Component{
     }
 }
 
-export default AppNav
+export default withRouter(AppNav); 

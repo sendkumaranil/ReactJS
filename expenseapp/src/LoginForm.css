@@ -23,6 +23,17 @@
         border-radius: 5px;
 
     }
+    .user_alert {
+        width: 400px;
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 350px;
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
     .user_card_register {
         height: 500px;
         width: 350px;

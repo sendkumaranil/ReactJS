@@ -221,8 +221,8 @@ class Expense extends React.Component{
                 </Container>
                 <Modal isOpen={this.state.modal} size="lg">
                 <Form onSubmit={this.handleFormSubmit}>
-                    <ModalHeader style={{color:'red'}}>Add Expense</ModalHeader>
-                    <ModalBody>
+                    <ModalHeader style={{color:'white',backgroundColor:'orange'}}>Add Expense</ModalHeader>
+                    <ModalBody style={{backgroundColor:'gray'}}>
                         <Table className="table table-hover table-dark">
                         <tbody>
                         <tr>
@@ -278,7 +278,7 @@ class Expense extends React.Component{
                     </tbody>
                     </Table>
                     </ModalBody>
-                    <ModalFooter>
+                    <ModalFooter style={{backgroundColor:'orange'}}>
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}
                         <Button color="danger" onClick={this.toggle}>Cancel</Button>
