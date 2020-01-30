@@ -24,6 +24,9 @@ public class ExpenseAppWebSecurity extends WebSecurityConfigurerAdapter {
     @Value("${jwt.get.token.uri}")
     private String authenticationPath;
 
+    @Value("${app.create.user.uri}")
+    private String createNewUserPath;
+
     @Autowired
     private JwtTokenAuthorizationFilter jwtTokenAuthorizationFilter;
 
@@ -59,6 +62,7 @@ public class ExpenseAppWebSecurity extends WebSecurityConfigurerAdapter {
         webSecurity
                 .ignoring()
                 .antMatchers(HttpMethod.POST,authenticationPath)
+                .antMatchers(HttpMethod.POST,createNewUserPath)
                 .antMatchers(HttpMethod.OPTIONS,"/**")
                 .and()
                 .ignoring()

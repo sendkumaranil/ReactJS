@@ -9,7 +9,7 @@ const Logout = props =>{
     });
 
     return (
-        <ExpenseCard title='Logged out' subtitle='302' text='you have logged out, click to Sign In' textcolor='warning' homedisplay='false'/>
+        <ExpenseCard title='Thank You! Good Day!!' subtitle='Logged Out' text='you have logged out, click to Sign In' textcolor='warning' homedisplay='false'/>
     );
 }
 

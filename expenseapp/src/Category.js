@@ -25,8 +25,7 @@ class Category extends React.Component{
         this.setState(
             {isLoading:true}
         )
-        console.log('auth token: '+this.state.jwtToken);
-        let body;
+        
         await fetch('http://localhost:8585/api/categories/',{
             method: 'GET',
             headers:{
@@ -48,16 +47,18 @@ class Category extends React.Component{
             )
         }).catch((error) => {
             console.log(error);
+            this.setState({isLoading:false});
             this.props.history.push('/accessdenied');
         });
     }
 
     async componentDidMount(){
+        let token;
         if(AuthenticationService.isUserLoggedIn()){
-            let token=AuthenticationService.getJwtToken();
+            token=AuthenticationService.getJwtToken();
             this.setState({jwtToken:token});
-            this.loadCategories(token);
         }
+        this.loadCategories(token);
     }
 
     toggle() {

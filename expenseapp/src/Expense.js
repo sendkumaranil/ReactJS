@@ -209,7 +209,6 @@ class Expense extends React.Component{
     }
 
     render(){
-        const title=<h3>Add Expense</h3>
         const {Categories}=this.state;
         const {Expenses,isLoading}=this.state;
         
