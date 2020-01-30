@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {EXPENSE_SERVICE_BASE_ENDPOINT,USER_NAME_SESSION_ATTRIBUTE} from '../constant'
+import {EXPENSE_SERVICE_BASE_ENDPOINT,USER_NAME_SESSION_ATTRIBUTE,AUTHORIZED_JWT_TOKEN} from '../constant'
 
 class AuthenticationService{
 
@@ -12,6 +12,7 @@ class AuthenticationService{
 
     registerSuccessfullLoginWithJwt(username,token){
         sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE,username);
+        sessionStorage.setItem(AUTHORIZED_JWT_TOKEN,token);
         this.setupAxiosInterceptor(this.createJwtToken(token));
     }
 
@@ -32,6 +33,11 @@ class AuthenticationService{
 
     createJwtToken(token){
         return 'Bearer '+token;
+    }
+
+    getJwtToken(){
+        let token = sessionStorage.getItem(AUTHORIZED_JWT_TOKEN);
+        return this.createJwtToken(token);
     }
 
     setupAxiosInterceptor(token){

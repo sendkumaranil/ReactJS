@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import './LoginForm.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faKey, faUser,faPenFancy,faEraser } from '@fortawesome/free-solid-svg-icons'
-import {Link} from 'react-router-dom'
+import {Link, withRouter} from 'react-router-dom'
 import ExpenseAlert from './ExpenseAlert'
 import AuthenticationService from './service/AuthenticationService'
 
@@ -11,9 +11,6 @@ const LoginForm = props =>{
 	const [passwd,setPasswd] = useState('');
 	const [fieldEmptyVisible,setFieldEmptyVisible] = useState(false);
 	const [invalidCreddVisible,setInvalidCreds] = useState(false);
-
-	const usernameInputRef=useRef();
-	const userpasswordInputRef=useRef();
 	
 	useEffect(() => AuthenticationService.logout());
 
@@ -50,12 +47,11 @@ const LoginForm = props =>{
 			props.history.push("/home");
 		})
 		.catch((error) =>{
+			console.log(error);
 			setInvalidCreds(true);
 			window.setTimeout(() =>{
 				setInvalidCreds(false);
 			},2000);
-			userpasswordInputRef.current.value='';
-			usernameInputRef.current.focus();
 		});
 	}
 
@@ -79,13 +75,13 @@ const LoginForm = props =>{
 							<div className="input-group-append">
 								<span className="input-group-text"><i><FontAwesomeIcon icon={faUser} /></i></span>
 							</div>
-							<input type="text" name="username" onChange={handleUsernameChange} className="form-control input_user" placeholder="username" ref={usernameInputRef} autoFocus={true}/>
+							<input type="text" name="username" onChange={handleUsernameChange} className="form-control input_user" placeholder="username" autoFocus={true}/>
 						</div>
 						<div className="input-group mb-2">
 							<div className="input-group-append">
 								<span className="input-group-text"><i><FontAwesomeIcon icon={faKey} /></i></span>
 							</div>
-							<input type="password" name="passwd" onChange={handlePasswordChange} className="form-control input_pass" placeholder="password" ref={userpasswordInputRef}/>
+							<input type="password" name="passwd" onChange={handlePasswordChange} className="form-control input_pass" placeholder="password" />
 						</div>
 						<div className="form-group">
 							<div className="custom-control custom-checkbox">
@@ -120,4 +116,4 @@ const LoginForm = props =>{
     );
 }
 
-export default LoginForm;
+export default withRouter(LoginForm);

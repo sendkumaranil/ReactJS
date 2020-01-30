@@ -1,6 +1,8 @@
 import React from 'react'
 import AppNav from './AppNav'
 import {Button,Input,Modal, ModalHeader, ModalBody, ModalFooter,Spinner} from 'reactstrap'
+import AuthenticationService from './service/AuthenticationService'
+import { withRouter } from 'react-router-dom'
 
 class Category extends React.Component{
     state={
@@ -8,36 +10,54 @@ class Category extends React.Component{
         Categories:[],
         modal:false,
         maxId:0,
-        catName:''
+        catName:'',
+        jwtToken:''
     }
     constructor(props){
-        super(props)
+        super(props);
         this.toggle=this.toggle.bind(this);
         this.handleFormSubmit=this.handleFormSubmit.bind(this);
         this.handleChangeName=this.handleChangeName.bind(this);
         this.loadCategories=this.loadCategories.bind(this);
     }
 
-    async loadCategories(){
+    async loadCategories(jwttoken){
         this.setState(
             {isLoading:true}
         )
-        const response=await fetch('http://localhost:8585/api/categories/');
-        const body=await response.json();
-        
-        const maxcatId= body.reduce((max, p) => p.id > max ? p.id : max, body[0].id);
-
-        this.setState(
-            {
-                Categories:body,
-                isLoading:false,
-                maxId:maxcatId
+        console.log('auth token: '+this.state.jwtToken);
+        let body;
+        await fetch('http://localhost:8585/api/categories/',{
+            method: 'GET',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin':'*',
+                'Authorization':jwttoken
             }
-        )
+        }).then((response) => response.json())
+        .then((catdata) => {
+            const body=catdata;
+            const maxcatId= body.reduce((max, p) => p.id > max ? p.id : max, body[0].id);
+            this.setState(
+                {
+                    Categories:body,
+                    isLoading:false,
+                    maxId:maxcatId
+                }
+            )
+        }).catch((error) => {
+            console.log(error);
+            this.props.history.push('/accessdenied');
+        });
     }
 
     async componentDidMount(){
-        this.loadCategories();
+        if(AuthenticationService.isUserLoggedIn()){
+            let token=AuthenticationService.getJwtToken();
+            this.setState({jwtToken:token});
+            this.loadCategories(token);
+        }
     }
 
     toggle() {
@@ -128,4 +148,4 @@ class Category extends React.Component{
     }
 }
 
-export default Category
+export default withRouter(Category);

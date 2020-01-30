@@ -5,9 +5,10 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './App.css'
 import {Spinner,Table,Container,Input,Button,Label,FormGroup,Form,Modal,ModalHeader,ModalBody,ModalFooter} from 'reactstrap'
 import Moment from 'react-moment'
-import {Link} from 'react-router-dom'
+import {Link, withRouter} from 'react-router-dom'
 import {EXPENSE_SERVICE_BASE_ENDPOINT} from './constant'
 import PaginationComp from './PaginationComp'
+import AuthenticationService from './service/AuthenticationService'
 
 class Expense extends React.Component{
     emptyItem = {
@@ -29,13 +30,17 @@ class Expense extends React.Component{
             item:this.emptyItem,
             modal:false,
             maxExpenseId:0,
-            username:''
+            username:'',
+            jwtToken:''
         }
+
         this.toggle=this.toggle.bind(this);
         this.handleFormSubmit=this.handleFormSubmit.bind(this);
         this.handleChange=this.handleChange.bind(this);
         this.handleDateChange=this.handleDateChange.bind(this);
         this.handleCategoryChange=this.handleCategoryChange.bind(this);
+        this.loadCategories=this.loadCategories.bind(this);
+        this.loadExpenses=this.loadExpenses.bind(this);
     }
 
     toggle() {
@@ -46,7 +51,6 @@ class Expense extends React.Component{
 
     async handleFormSubmit(event){
         event.preventDefault();
-        
         let item=this.state.item;
         const maxExpId=this.state.maxExpenseId;
         item.id=maxExpId;
@@ -55,17 +59,20 @@ class Expense extends React.Component{
             method:'POST',
             headers:{
                 'Accept':'application/json',
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization':this.state.jwtToken
             },
             body: JSON.stringify(item),
+        }).catch((error) => {
+            console.log(error);
+            this.props.history.push("/accessdenied");
         });
 
         this.setState({
             modal: !this.state.modal
         });
 
-        this.loadExpenses();
-
+        this.loadExpenses(this.state.jwtToken);
     }
 
     async handleChange(event){
@@ -74,8 +81,6 @@ class Expense extends React.Component{
 
         let item={...this.state.item};
         item[name]=value;
-        
-        console.log(item);
 
         this.setState(
             {item}
@@ -104,7 +109,8 @@ class Expense extends React.Component{
             headers:{
                 'Accept':'application/json',
                 'Content-Type':'application/json',
-                'Access-Control-Allow-Origin':'*'
+                'Access-Control-Allow-Origin':'*',
+                'Authorization':this.state.jwtToken
             }
         }).then(() => {
             let updatedExpenses=[...this.state.Expenses].filter(i => i.id !== id);
@@ -113,48 +119,92 @@ class Expense extends React.Component{
                     Expenses:updatedExpenses
                 }
             );
+        }).catch((error) => {
+            console.log(error);
+            this.props.history.push("/accessdenied");
         });
     }
 
-    async loadExpenses(){
-        
+    async loadExpenses(jwttoken){
         this.setState(
             {
-                isLoading:false
+                isLoading:true
             }
         )
-
-        const expenseResponse=await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/expenses/');
-        const expData=await expenseResponse.json();
-        const expMaxId=expData.reduce((max,p) => p.id > max ? p.id : max,expData[0].id);
-        const genexpNextID=Number(expMaxId) + 1;
-        const user=expData[0].user.name;
-        this.setState(
-            {
-                Expenses:expData,
-                isLoading:false,
-                maxExpenseId:genexpNextID,
-                username:user
+        let expData;
+        
+        await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/expenses/',{
+            method:'GET',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin':'*',
+                'Authorization':jwttoken
             }
-        );
+        }).then((response) => response.json())
+        .then((responseData) => {
+            expData = responseData;
+            const expMaxId=expData.reduce((max,p) => p.id > max ? p.id : max,expData[0].id);
+            const genexpNextID=Number(expMaxId) + 1;
+            const user=expData[0].user.name;
+            this.setState(
+                {
+                    Expenses:expData,
+                    isLoading:false,
+                    maxExpenseId:genexpNextID,
+                    username:user
+                }
+            );
+        })
+        .catch((error) =>{
+            console.log(error);
+            this.props.history.push("/accessdenied");
+        });
+        
     }
 
-    async loadCategories(){
-        const response=await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/categories/');
-        const body=await response.json();
-        this.setState(
-            {
-                Categories:body,
-                isLoading:false
+    async loadCategories(jwttoken){
+        let body;
+        await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/categories/',{
+            method:'GET',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type':'application/json',
+                'Access-Control-Allow-Origin':'*',
+                'Authorization':jwttoken
             }
-        );
+        }).then((response) => response.json())
+        .then((data) => {
+            body = data;
+            this.setState(
+                {
+                    Categories:body,
+                    isLoading:false
+                }
+            );
+        }).catch((error) =>{
+            console.log(error);
+            this.props.history.push('/accessdenied');
+        });
     }
 
     async componentDidMount(){
-        
-        this.loadCategories();
+        let token;
+        let usrname;
+        if(AuthenticationService.isUserLoggedIn()){
+            token = AuthenticationService.getJwtToken();
+            usrname = AuthenticationService.getLoggedInUserName();
+            this.setState(
+                {
+                    jwtToken:token,
+                    username:usrname
+                }
+            );
+        }
 
-        this.loadExpenses();
+        this.loadExpenses(token);
+
+        this.loadCategories(token);
 
     }
 
@@ -162,7 +212,7 @@ class Expense extends React.Component{
         const title=<h3>Add Expense</h3>
         const {Categories}=this.state;
         const {Expenses,isLoading}=this.state;
-
+        
         if(isLoading){
             return (<div><AppNav/><h2>Loading 
             <Spinner type="grow" color="primary" />
@@ -291,4 +341,4 @@ class Expense extends React.Component{
     }
 }
 
-export default Expense
+export default withRouter(Expense);
