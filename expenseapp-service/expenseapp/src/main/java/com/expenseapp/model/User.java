@@ -29,16 +29,19 @@ public class User {
 
     private String password;
 
+    private String mobilenumber;
+
     public User(){
 
     }
 
-    public User(String username, String firstname, String lastname, String email, String password) {
+    public User(String username, String firstname, String lastname, String email, String password,String mobilenumber) {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
+        this.mobilenumber=mobilenumber;
     }
 
     public long getId() {
@@ -87,5 +90,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getMobilenumber() {
+        return mobilenumber;
+    }
+
+    public void setMobilenumber(String mobilenumber) {
+        this.mobilenumber = mobilenumber;
     }
 }

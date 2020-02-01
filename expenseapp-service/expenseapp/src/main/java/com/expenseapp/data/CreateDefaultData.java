@@ -31,11 +31,11 @@ public class CreateDefaultData {
     @PostConstruct
     public void createDefaultUsers(){
         User user1=new User("anil.kumar@gmail.com","Anil","Kumar",
-                "anil.kumar@gmail.com",bCryptPasswordEncoder.encode("anilkumar"));
+                "anil.kumar@gmail.com",bCryptPasswordEncoder.encode("Welcome@123"),"8012345002");
         User user2=new User("rupesh.verma@gmail.com","Rupesh","Verma",
-                "rupesh.verma@gmail.com",bCryptPasswordEncoder.encode("rupeshverma"));
+                "rupesh.verma@gmail.com",bCryptPasswordEncoder.encode("Welcome@123"),"9912387221");
         User user3=new User("anjali.kushwaha@gmail.com","Anjali","Kushwaha",
-                "anjali.kushwaha@gmail.com",bCryptPasswordEncoder.encode("anjalikushwaha"));
+                "anjali.kushwaha@gmail.com",bCryptPasswordEncoder.encode("Welcome@123"),"7234512345");
 
         userRepository.save(user1);
         userRepository.save(user2);

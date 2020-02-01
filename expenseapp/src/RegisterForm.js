@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faKey, faUser,faPen,faAt } from '@fortawesome/free-solid-svg-icons'
+import { faKey, faUser,faPen,faAt, faPhone } from '@fortawesome/free-solid-svg-icons'
 import {Link, withRouter} from 'react-router-dom'
 import ExpenseAlert from './ExpenseAlert'
 import passwordValidator from 'password-validator'
+import {EXPENSE_SERVICE_BASE_ENDPOINT} from './constant'
 
 const RegisterForm = props => {
 
@@ -11,8 +12,9 @@ const RegisterForm = props => {
 	const [lastname,setLastName] = useState('');
 	const [emailId,setEmailId] = useState('');
 	const [username,setUserName] = useState('');
-	const [password,setPassword] =useState('');
+	const [password,setPassword] = useState('');
 	const [reenterpassword,setReEnterPassword] = useState('');
+	const [mobilenumber,setMobileNumber] = useState('');
 	const [fieldEmptyVisible,setFieldEmptyVisible] = useState(false);
 	const [myError,setMyError] = useState('');
 	
@@ -100,6 +102,9 @@ const RegisterForm = props => {
 		if(!validatePassword(password)){
 			return false;
 		}
+		if(!validateMobileNo(mobilenumber)){
+			return false;
+		}
 		return true;
 	}
 
@@ -174,8 +179,38 @@ const RegisterForm = props => {
 
 	function submitFormHandler(event){
 		if(formValidation()){
-			console.log('saved');
-			props.history.push("/login");
+
+			fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/register-user',{
+				method:'POST',
+				headers:{
+					'Accept':'application/json',
+					'Content-Type':'application/json',
+					'Access-Contol-Allow-Origin':'*'
+				},
+				body: JSON.stringify({
+					'firstname':firstname,
+					'lastname':lastname,
+					'email':emailId,
+					'username':username,
+					'password':password,
+					'mobilenumber':mobilenumber
+				})
+
+			}).then((response) => response.json())
+			.then(data => {
+				let messagecode=data.message_code;
+				if(messagecode === 'USER_AVAILABLE'){
+					setMyError(data.message);
+					setFieldEmptyVisible(true);
+					window.setTimeout(()=>{
+						setFieldEmptyVisible(false);
+					},2000);
+				}else{
+					props.history.push("/login");
+				}
+			}).catch((error) =>{
+				setMyError(error);
+			});
 		}
 	}
 
@@ -208,6 +243,12 @@ const RegisterForm = props => {
 								<span className="input-group-text"><i><FontAwesomeIcon icon={faAt} /></i></span>
 							</div>
 							<input type="text" name="email" className="form-control input_user" value={emailId} onChange={e => setEmailId(e.target.value)} placeholder="email"/>
+						</div>
+						<div className="input-group mb-1">
+							<div className="input-group-append">
+								<span className="input-group-text"><i><FontAwesomeIcon icon={faPhone} /></i></span>
+							</div>
+							<input type="text" name="mobilenum" className="form-control input_user" value={mobilenumber} onChange={e => setMobileNumber(e.target.value)} placeholder="mobile number"/>
 						</div>
 						<div className="input-group mb-1">
 							<div className="input-group-append">
