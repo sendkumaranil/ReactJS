@@ -4,7 +4,7 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        background: #6DB5AA !important;
+        background: #F1D302 !important;
     }
     .user_card {
         height: 400px;
@@ -57,7 +57,7 @@
         width: 170px;
         top: -75px;
         border-radius: 50%;
-        background: #6DB5AA;
+        background: #F1D302;
         padding: 10px;
         text-align: center;
     }
@@ -68,7 +68,7 @@
         top: 5px;
         margin:15px 110px 15px 110px;
         border-radius: 50%;
-        background: #6DB5AA;
+        background: #F1D302;
         padding: 10px;
         text-align: center;
     }
@@ -118,5 +118,5 @@
         outline: 0px !important;
     }
     .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
-        background-color: #6DB5AA !important;
+        background-color: #F1D302 !important;
     }

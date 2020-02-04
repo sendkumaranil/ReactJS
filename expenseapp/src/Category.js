@@ -1,8 +1,10 @@
 import React from 'react'
 import AppNav from './AppNav'
-import {Button,Input,Modal, ModalHeader, ModalBody, ModalFooter,Spinner} from 'reactstrap'
+import {Button,Input,Modal, ModalHeader, ModalBody, ModalFooter,Spinner,Container,Table,Badge} from 'reactstrap'
 import AuthenticationService from './service/AuthenticationService'
 import { withRouter } from 'react-router-dom'
+import {EXPENSE_SERVICE_BASE_ENDPOINT} from './constant'
+import ErrorPage from './ErrorPage'
 
 class Category extends React.Component{
     state={
@@ -11,7 +13,8 @@ class Category extends React.Component{
         modal:false,
         maxId:0,
         catName:'',
-        jwtToken:''
+        jwtToken:'',
+        loggedUsername:''
     }
     constructor(props){
         super(props);
@@ -21,12 +24,12 @@ class Category extends React.Component{
         this.loadCategories=this.loadCategories.bind(this);
     }
 
-    async loadCategories(jwttoken){
+    async loadCategories(jwttoken,loggedusername){
         this.setState(
             {isLoading:true}
         )
         
-        await fetch('http://localhost:8585/api/categories/',{
+        await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/categories/'+loggedusername,{
             method: 'GET',
             headers:{
                 'Accept':'application/json',
@@ -46,19 +49,19 @@ class Category extends React.Component{
                 }
             )
         }).catch((error) => {
-            console.log(error);
             this.setState({isLoading:false});
             this.props.history.push('/accessdenied');
         });
     }
 
     async componentDidMount(){
-        let token;
+        let token,username;
         if(AuthenticationService.isUserLoggedIn()){
             token=AuthenticationService.getJwtToken();
-            this.setState({jwtToken:token});
+            username=AuthenticationService.getLoggedInUserName();
+            this.setState({jwtToken:token,loggedUsername:username});
         }
-        this.loadCategories(token);
+        this.loadCategories(token,username);
     }
 
     toggle() {
@@ -81,22 +84,26 @@ class Category extends React.Component{
         
         const catBody={
             id:newcatId,
-            name:newcatname
+            name:newcatname,
+            user:{username:this.state.loggedUsername}
         }
         
-        await fetch('http://localhost:8585/api/categories/',{
+        await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/categories/',{
             method:'POST',
             headers:{
                 'Accept':'application/json',
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization':this.state.jwtToken
             },
             body: JSON.stringify(catBody)
+        }).catch((error) =>{
+            return <ErrorPage errorMessage={error} />
         });
         this.setState({
             modal: !this.state.modal
         });
 
-        this.loadCategories();
+        this.loadCategories(this.state.jwtToken,this.state.loggedUsername);
     }
 
     render(){
@@ -112,21 +119,35 @@ class Category extends React.Component{
         return(
             <div>
                 <AppNav/>
-                <ul className='list-group'>
-                <li className='list-group-item active'>Categories Details</li>
-                {
-                    Categories.map( category =>
-                            <li className='list-group-item' key={category.id} id={category.id}>
-                                {category.name}
-                            </li>
-                    )
-                }
-                <li className='list-group-item active'>
-                    <Button color="secondary" onClick={this.toggle}>Add Category</Button>
-                </li>
-                </ul>
-                {console.log("maxId:"+this.state.maxId)}
-
+                <Container>
+                <div className="shadow-lg p-3 mb-5 bg-white rounded">
+                    <h5 style={{float:'right'}}><Badge color="secondary">{this.state.loggedUsername}</Badge></h5>
+                    <h4 className="text-danger">Categories List</h4>
+                    <Table className="table table-hover table-dark">
+                        <thead>
+                            <tr className="bg-warning">
+                                <th width="30%">Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            Categories.map( category =>
+                            <tr key={category.id}>
+                                <td>
+                                    {category.name}
+                                </td>
+                            </tr>
+                            )
+                        }
+                        </tbody>
+                    </Table>
+                    </div>
+                </Container>
+                <Container>
+                <div className="shadow-lg p-3 mb-5 bg-white rounded">
+                    <Button color="danger" onClick={this.toggle}>Add Category</Button>
+                </div>
+                </Container>
                 <Modal isOpen={this.state.modal}>
                 <form onSubmit={this.handleFormSubmit}>
                     <ModalHeader style={{color:'blue'}}>Add Category</ModalHeader>

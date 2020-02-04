@@ -1,7 +1,9 @@
 package com.expenseapp.controller;
 
 import com.expenseapp.model.Expense;
+import com.expenseapp.model.User;
 import com.expenseapp.repository.ExpenseRepository;
+import com.expenseapp.repository.UserRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class ExpenseController {
     @Autowired
     private ExpenseRepository expenseRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/")
     public List<Expense> getExpenses(){
 
@@ -38,5 +43,14 @@ public class ExpenseController {
     public ResponseEntity<?> deleteExpense(@PathVariable("id") long id){
         expenseRepository.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<?> expenseByUsername(@PathVariable("username") String username){
+
+        User user=userRepository.findByUsername(username);
+        List<Expense> expenses=expenseRepository.findByUserId(user.getId());
+
+        return ResponseEntity.ok(expenses);
     }
 }

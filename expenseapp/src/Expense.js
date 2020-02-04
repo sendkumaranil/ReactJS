@@ -30,7 +30,7 @@ class Expense extends React.Component{
             item:this.emptyItem,
             modal:false,
             maxExpenseId:0,
-            username:'',
+            loggedInUsername:'',
             jwtToken:''
         }
 
@@ -125,7 +125,7 @@ class Expense extends React.Component{
         });
     }
 
-    async loadExpenses(jwttoken){
+    async loadExpenses(jwttoken,loggedusername){
         this.setState(
             {
                 isLoading:true
@@ -133,7 +133,7 @@ class Expense extends React.Component{
         )
         let expData;
         
-        await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/expenses/',{
+        await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/expenses/'+loggedusername,{
             method:'GET',
             headers:{
                 'Accept':'application/json',
@@ -146,13 +146,12 @@ class Expense extends React.Component{
             expData = responseData;
             const expMaxId=expData.reduce((max,p) => p.id > max ? p.id : max,expData[0].id);
             const genexpNextID=Number(expMaxId) + 1;
-            const user=expData[0].user.name;
+            
             this.setState(
                 {
                     Expenses:expData,
                     isLoading:false,
-                    maxExpenseId:genexpNextID,
-                    username:user
+                    maxExpenseId:genexpNextID
                 }
             );
         })
@@ -197,12 +196,12 @@ class Expense extends React.Component{
             this.setState(
                 {
                     jwtToken:token,
-                    username:usrname
+                    loggedInUsername:usrname
                 }
             );
         }
 
-        this.loadExpenses(token);
+        this.loadExpenses(token,usrname);
 
         this.loadCategories(token);
 

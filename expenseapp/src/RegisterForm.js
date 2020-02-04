@@ -199,14 +199,30 @@ const RegisterForm = props => {
 			}).then((response) => response.json())
 			.then(data => {
 				let messagecode=data.message_code;
-				if(messagecode === 'USER_AVAILABLE'){
-					setMyError(data.message);
-					setFieldEmptyVisible(true);
-					window.setTimeout(()=>{
-						setFieldEmptyVisible(false);
-					},2000);
-				}else{
-					props.history.push("/login");
+				switch(messagecode){
+					case 'USER_AVAILABLE':
+						setMyError(data.message);
+						setFieldEmptyVisible(true);
+						window.setTimeout(()=>{
+							setFieldEmptyVisible(false);
+						},2000);
+						break;
+					case 'EMAIL_AVAILABLE':
+						setMyError(data.message);
+						setFieldEmptyVisible(true);
+						window.setTimeout(()=>{
+							setFieldEmptyVisible(false);
+						},2000);
+						break;
+					case 'MOBILE_AVAILABLE':
+						setMyError(data.message);
+						setFieldEmptyVisible(true);
+						window.setTimeout(()=>{
+							setFieldEmptyVisible(false);
+						},2000);
+						break;
+					default:
+						props.history.push("/login");
 				}
 			}).catch((error) =>{
 				setMyError(error);

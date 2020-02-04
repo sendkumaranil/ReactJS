@@ -41,19 +41,43 @@ public class CreateDefaultData {
         userRepository.save(user2);
         userRepository.save(user3);
 
-        Category category1=new Category("Travel");
-        Category category2=new Category("Grocery");
-        Category category3=new Category("Apparel");
+        Category category1=new Category("Travel",user3);
+        Category category2=new Category("Grocery",user3);
+        Category category3=new Category("Apparel",user3);
+
+        Category category4=new Category("Travel",user1);
+        Category category5=new Category("Grocery",user1);
+
+        Category category6=new Category("Apparel",user2);
+        Category category7=new Category("Travel",user2);
 
         categoryRepository.save(category1);
         categoryRepository.save(category2);
         categoryRepository.save(category3);
+        categoryRepository.save(category4);
+        categoryRepository.save(category5);
+        categoryRepository.save(category6);
+        categoryRepository.save(category7);
 
         Instant date=Instant.now();
-        Expense expense1=new Expense(date,"Goa Trip","Goa",category1,user1);
-        Expense expense2=new Expense(date,"Grocery","Bangalore",category2,user1);
+        Expense expense1=new Expense(date,"Goa Trip","Goa",category4,user1);
+        Expense expense2=new Expense(date,"Grocery","Bangalore",category5,user1);
 
         expenseRepository.save(expense1);
         expenseRepository.save(expense2);
+
+        Expense expense3=new Expense(date,"Mysore Trip","Mysore",category6,user2);
+        Expense expense4=new Expense(date,"Jeans","Bangalore",category7,user2);
+
+        expenseRepository.save(expense3);
+        expenseRepository.save(expense4);
+
+        Expense expense5=new Expense(date,"Agra Trip","Agra",category1,user3);
+        Expense expense6=new Expense(date,"Grocery","Bangalore",category2,user3);
+        Expense expense7=new Expense(date,"Sweater","Bangalore",category3,user3);
+
+        expenseRepository.save(expense5);
+        expenseRepository.save(expense6);
+        expenseRepository.save(expense7);
     }
 }
