@@ -66,6 +66,7 @@ class Category extends React.Component{
 
     toggle() {
         this.setState({
+         catName:'',
           modal: !this.state.modal
         });
         console.log('toggle:'+this.state.modal)
@@ -79,11 +80,9 @@ class Category extends React.Component{
 
     async handleFormSubmit(event){
         event.preventDefault();
-        const newcatId=(this.state.maxId)+1;
         const newcatname=this.state.catName;
         
         const catBody={
-            id:newcatId,
             name:newcatname,
             user:{username:this.state.loggedUsername}
         }
@@ -100,10 +99,18 @@ class Category extends React.Component{
             return <ErrorPage errorMessage={error} />
         });
         this.setState({
+            catName:'',
             modal: !this.state.modal
+
         });
 
         this.loadCategories(this.state.jwtToken,this.state.loggedUsername);
+    }
+
+    async remove(categoryId){
+        if(!window.confirm('Are you sure?')){
+            return ;
+        }
     }
 
     render(){
@@ -125,8 +132,9 @@ class Category extends React.Component{
                     <h4 className="text-danger">Categories List</h4>
                     <Table className="table table-hover table-dark">
                         <thead>
-                            <tr className="bg-warning">
-                                <th width="30%">Name</th>
+                            <tr className="bg-danger">
+                                <th width="80%">Name</th>
+                                <th width="20%">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -135,6 +143,9 @@ class Category extends React.Component{
                             <tr key={category.id}>
                                 <td>
                                     {category.name}
+                                </td>
+                                <td>
+                                    <Button size="sm" color="danger" onClick={() => this.remove(category.id)} >Delete</Button>
                                 </td>
                             </tr>
                             )
@@ -150,16 +161,18 @@ class Category extends React.Component{
                 </Container>
                 <Modal isOpen={this.state.modal}>
                 <form onSubmit={this.handleFormSubmit}>
-                    <ModalHeader style={{color:'blue'}}>Add Category</ModalHeader>
-                    <ModalBody>
+                    <ModalHeader style={{color:'red',backgroundColor:'#F1D302'}}>
+                    <img src={process.env.PUBLIC_URL + "/expense.png"} className="brand_logo_home" alt="Logo"/>
+                    &nbsp;Add Category</ModalHeader>
+                    <ModalBody style={{backgroundColor:'gray'}}>
                         <div className='row'>
                             <div className="form-group col-md-4">
-                                <label>Category:</label>
-                                <Input type="text"  value={this.state.catName} onChange={this.handleChangeName} className="form-control" style={{width: "400px"}}/>
+                                <label style={{color:'white'}}>Category:</label>
+                                <Input type="text"  value={this.state.catName} onChange={this.handleChangeName} className="form-control"  placeholder="enter category name" style={{width: "400px"}}/>
                             </div>
                         </div>
                     </ModalBody>
-                    <ModalFooter>
+                    <ModalFooter style={{backgroundColor:'#F1D302'}}>
                         <input type="submit" value="Save" color="primary" className="btn btn-primary" />
                         <Button color="danger" onClick={this.toggle}>Cancel</Button>
                     </ModalFooter>

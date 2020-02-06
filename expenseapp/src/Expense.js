@@ -3,7 +3,7 @@ import AppNav from './AppNav'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import './App.css'
-import {Spinner,Table,Container,Input,Button,Label,FormGroup,Form,Modal,ModalHeader,ModalBody,ModalFooter} from 'reactstrap'
+import {Spinner,Table,Container,Input,Button,Label,FormGroup,Form,Modal,ModalHeader,ModalBody,ModalFooter,Badge} from 'reactstrap'
 import Moment from 'react-moment'
 import {Link, withRouter} from 'react-router-dom'
 import {EXPENSE_SERVICE_BASE_ENDPOINT} from './constant'
@@ -14,7 +14,6 @@ class Expense extends React.Component{
     emptyItem = {
         description : '',
         expensedate : new Date(),
-        id:0,
         location : '',
         category : {id:0},
         user: {id:1}
@@ -51,10 +50,10 @@ class Expense extends React.Component{
 
     async handleFormSubmit(event){
         event.preventDefault();
-        let item=this.state.item;
-        const maxExpId=this.state.maxExpenseId;
-        item.id=maxExpId;
+        let item=this.state.item;        
         
+        item.user={username:this.state.loggedInUsername}
+
         await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/expenses/',{
             method:'POST',
             headers:{
@@ -72,7 +71,7 @@ class Expense extends React.Component{
             modal: !this.state.modal
         });
 
-        this.loadExpenses(this.state.jwtToken);
+        this.loadExpenses(this.state.jwtToken,this.state.loggedInUsername);
     }
 
     async handleChange(event){
@@ -104,6 +103,11 @@ class Expense extends React.Component{
     }
 
     async remove(id){
+        
+        if(!window.confirm('Are you sure')){
+            return;
+        }
+
         await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/expenses/'+id,{
             method:'DELETE',
             headers:{
@@ -145,8 +149,9 @@ class Expense extends React.Component{
         .then((responseData) => {
             expData = responseData;
             const expMaxId=expData.reduce((max,p) => p.id > max ? p.id : max,expData[0].id);
+            console.log('max id::'+expMaxId);
             const genexpNextID=Number(expMaxId) + 1;
-            
+            console.log('max id:'+genexpNextID);
             this.setState(
                 {
                     Expenses:expData,
@@ -162,9 +167,9 @@ class Expense extends React.Component{
         
     }
 
-    async loadCategories(jwttoken){
+    async loadCategories(jwttoken,username){
         let body;
-        await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/categories/',{
+        await fetch(EXPENSE_SERVICE_BASE_ENDPOINT+'/api/categories/'+username,{
             method:'GET',
             headers:{
                 'Accept':'application/json',
@@ -203,7 +208,7 @@ class Expense extends React.Component{
 
         this.loadExpenses(token,usrname);
 
-        this.loadCategories(token);
+        this.loadCategories(token,usrname);
 
     }
 
@@ -220,7 +225,7 @@ class Expense extends React.Component{
         }
 
         let optionList=Categories.map( category =>
-             <option value={category.id} key={category.name}>{category.name}</option>
+             <option value={category.id} key={category.id}>{category.name}</option>
         )
 
         let rows=Expenses.map( expense =>
@@ -238,10 +243,11 @@ class Expense extends React.Component{
                 <AppNav/>
                 <Container>
                 <div className="shadow-lg p-3 mb-5 bg-white rounded">
+                    <h5 style={{float:'right'}}><Badge color="secondary">{this.state.loggedInUsername}</Badge></h5>
                     <h4 className="text-danger">Expense List</h4>
                     <Table className="table table-hover table-dark">
                         <thead>
-                            <tr className="bg-warning">
+                            <tr className="bg-danger">
                                 <th width="30%">Description</th>
                                 <th width="10%">Location</th>
                                 <th>Category</th>
@@ -269,7 +275,9 @@ class Expense extends React.Component{
                 </Container>
                 <Modal isOpen={this.state.modal} size="lg">
                 <Form onSubmit={this.handleFormSubmit}>
-                    <ModalHeader style={{color:'white',backgroundColor:'orange'}}>Add Expense</ModalHeader>
+                    <ModalHeader style={{color:'red',backgroundColor:'#F1D302'}}>
+                    <img src={process.env.PUBLIC_URL + "/expense.png"} className="brand_logo_home" alt="Logo"/>
+                        &nbsp;Add Expense</ModalHeader>
                     <ModalBody style={{backgroundColor:'gray'}}>
                         <Table className="table table-hover table-dark">
                         <tbody>
@@ -326,7 +334,7 @@ class Expense extends React.Component{
                     </tbody>
                     </Table>
                     </ModalBody>
-                    <ModalFooter style={{backgroundColor:'orange'}}>
+                    <ModalFooter style={{backgroundColor:'#F1D302'}}>
                     <FormGroup>
                         <Button color="primary" type="submit">Save</Button>{' '}
                         <Button color="danger" onClick={this.toggle}>Cancel</Button>

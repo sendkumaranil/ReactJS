@@ -23,7 +23,7 @@ const ExpenseCard = props =>{
                 </CardBody>
                 <CardFooter>
                     <CardLink href="/login">Sign In</CardLink>
-                    <CardLink href="/registeruser">New User</CardLink>
+                    { props.newUserDisplay === 'true' ? <CardLink href="/registeruser">New User</CardLink> : ''}
                     { (props.homedisplay === 'true') ? <CardLink href="/home">Home</CardLink> : ''}
                 </CardFooter>
             </Card>

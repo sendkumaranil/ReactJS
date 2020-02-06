@@ -34,7 +34,8 @@ public class ExpenseController {
 
     @PostMapping("/")
     public ResponseEntity<Expense> createExpense(@Valid @RequestBody Expense expense) throws URISyntaxException {
-        System.out.println("User-Id"+expense);
+        User user=userRepository.findByUsername(expense.getUser().getUsername());
+        expense.setUser(user);
         Expense result=expenseRepository.save(expense);
         return ResponseEntity.created(new URI("/api/expenses/"+result.getId())).body(result);
     }
@@ -47,7 +48,6 @@ public class ExpenseController {
 
     @GetMapping("/{username}")
     public ResponseEntity<?> expenseByUsername(@PathVariable("username") String username){
-
         User user=userRepository.findByUsername(username);
         List<Expense> expenses=expenseRepository.findByUserId(user.getId());
 
